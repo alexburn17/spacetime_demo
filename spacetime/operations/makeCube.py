@@ -111,11 +111,11 @@ def make_cube(data = None, fileName = None, organizeFiles="filestotime", organiz
         varNames = data.get_names()
 
         if type(varNames) != type(None):
-            preCube = write_netcdf(cube=data, dataset=array, fileName=fileName, organizeFiles = "filestovar", vars=varNames, timeObj = time) # make netcdf4 cube
+            preCube = write_netcdf(cube=data, dataset=array, fileName=fileName, organizeFiles = "filestovar",organizeBands="bandstotime", vars=varNames, timeObj = time) # make netcdf4 cube
             cubeObj = cube(preCube, fileStruc = "filestovar", names=varNames, timeObj=time)
 
         else:
-            preCube = write_netcdf(cube=data, dataset=array, fileName=fileName, organizeFiles = "filestotime", timeObj = time) # make netcdf4 cube
+            preCube = write_netcdf(cube=data, dataset=array, fileName=fileName, organizeFiles = "filestotime", organizeBands="bandstotime" ,timeObj = time) # make netcdf4 cube
             cubeObj = cube(preCube, fileStruc = "filestotime", timeObj=time)
 
 
