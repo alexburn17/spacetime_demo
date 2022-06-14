@@ -56,8 +56,6 @@ def select_time(cube, range="entire", scale = None, element=None):
         if scale == "year":
             x = ds.where(ds['time.year'] == element, drop=True)
 
-        out = x
-
     else:
 
         x=ds.sel(time=slice(range[0], range[1]))
@@ -71,14 +69,14 @@ def select_time(cube, range="entire", scale = None, element=None):
             if scale == "year":
                 x = x.where(x['time.year'] == element, drop=True)
 
-        if len(ds.shape) >= 4:
-            filestovar = True
-        else:
-            filestovar = False
+    if len(ds.shape) >= 4:
+        filestovar = True
+    else:
+        filestovar = False
 
-        ret = interum_cube(cube = cube, array = x, structure = filestovar)
+    out = interum_cube(cube = cube, array = x, structure = filestovar)
 
-    return ret
+    return out
 
 
 
