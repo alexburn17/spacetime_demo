@@ -71,10 +71,11 @@ ds = make_cube(data = trimmed, fileName = "test.nc4", organizeFiles = "filestova
 # answer = cube_smasher(eq = "a * c", a = y, c = 5, parentCube = y)
 #
 # # plot the cube and output the data set in dataframe format that made the plot
-# t=plot_cube(cube=x, variable="B", type="space", summary = "max", showPlot = True)
+plot_cube(cube=ds, variable="1", type="time_series", summary = "max", showPlot = True)
 
 # # convert a cube into a dataframe
-# df = cube_to_dataframe(cube=x)
+# df = cube_to_dataframe(cube=ds)
+# print(df)
 #
 # # write out our final cube as a .cd4 file
 # #ds = make_cube(data = x, fileName = "testCube.nc4")

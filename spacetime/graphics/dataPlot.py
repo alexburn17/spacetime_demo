@@ -38,8 +38,6 @@ def plot_cube(cube, type="space", variable = None, summary="mean", showPlot = Tr
 
         coords = cube.upper_left_corner()
 
-        print(coords)
-
         # plot the map
         fig = px.scatter_mapbox(dfPlot, lat='lat',
                                     lon='lon',
@@ -49,7 +47,7 @@ def plot_cube(cube, type="space", variable = None, summary="mean", showPlot = Tr
                                     color_continuous_scale="Viridis",
                                     opacity=0.5,
                                 )
-        fig.update_layout(mapbox_style="carto-darkmatter", mapbox_zoom=4.5, mapbox_center = {"lat": 52, "lon": 4},)
+        fig.update_layout(mapbox_style="carto-darkmatter", mapbox_zoom=3, mapbox_center = {"lat": coords[0], "lon": coords[1]},)
         fig.update_layout(margin={"r":0,"t":0,"l":20,"b":0},
             plot_bgcolor="#252e3f",
             paper_bgcolor="#252e3f",
