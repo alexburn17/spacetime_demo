@@ -20,7 +20,7 @@ def load_cube(file):
     if len(varNames) > 1:
         struc = "filestovar"
     else:
-        struc = "stack"
+        struc = "filestotime"
 
 
     cube_ds = cube(ds, fileStruc = struc, names=varNames, timeObj=time)

@@ -24,7 +24,7 @@ def cube_smasher(function = None, eq = None, parentCube = None, **kwarg):
 
     if eq == None:
 
-        y = function(**outDict)
+        y = function(**kwarg)
 
     if parentCube == None:
         out = y

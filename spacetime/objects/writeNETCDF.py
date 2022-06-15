@@ -47,6 +47,7 @@ def write_netcdf(cube, dataset, fileName, organizeFiles, organizeBands, vars=Non
                 ds.variables[vars[i]][:] = dataset[i]
 
 
+
         if str(type(timeObj)) == "<class 'numpy.ndarray'>":
 
             ds.variables['time'][:] = timeObj

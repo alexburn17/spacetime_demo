@@ -63,23 +63,27 @@ def make_cube(data = None, fileName = None, organizeFiles="filestotime", organiz
 
             # if no var names given generate letters A-Z
             if varNames == None:
-                varNames = list(string.ascii_uppercase[0:numBands])
+                names = list(range(numBands))
+                varNames = list(map(str, names))
 
             # create sub cubes for vrrt and array for each band variable
             arrayCube = []
             gdalCube = []
+
             for i in range(numBands):
                 arrayCube.append(outMat[:, :, 0::numBands])
                 gdalCube.append(dataList[0::numBands])
 
+            #print(arrayCube[0].shape)
+
             metaDataMerge = merge_layers(gdalCube, raster=True)
-            dataMerge = merge_layers(arrayCube, raster=False)
+            #dataMerge = merge_layers(arrayCube, raster=False)
 
             metaCube = []
             for i in range(len(metaDataMerge)):
                 metaCube.append(cube_meta(metaDataMerge[i]))
 
-            preCube = write_netcdf(cube=metaCube[0], dataset=dataMerge, fileName=fileName, organizeFiles = "filestotime", organizeBands="bandstovar", vars=varNames, timeObj = time) # make netcdf4 cube
+            preCube = write_netcdf(cube=metaCube[0], dataset=arrayCube, fileName=fileName, organizeFiles = "filestotime", organizeBands="bandstovar", vars=varNames, timeObj = time) # make netcdf4 cube
             cubeObj = cube(preCube, fileStruc = "filestovar", names=varNames, timeObj=time)
 
         # if files are each one variable
@@ -96,7 +100,8 @@ def make_cube(data = None, fileName = None, organizeFiles="filestotime", organiz
 
             # if no var names given generate letters A-Z
             if varNames == None:
-                varNames = list(string.ascii_uppercase[0:len(gdalCube)])
+                names = list(range(len(gdalCube)))
+                varNames = list(map(str, names))
 
             preCube = write_netcdf(cube=gdalCube[0], dataset=dataMerge, fileName=fileName, organizeFiles = "filestovar", organizeBands="bandstotime", vars=varNames, timeObj = time) # make netcdf4 cube
             cubeObj = cube(preCube, fileStruc = "filestovar", names=varNames, timeObj=time)
