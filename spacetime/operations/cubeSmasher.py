@@ -14,9 +14,13 @@ def cube_smasher(function = None, eq = None, parentCube = None, **kwarg):
 
     # loop through input dict to extract raster data for operations
     for key in kwarg:
-        if "cube" in str(type(kwarg[key])):
-            kwarg[key] = kwarg[key].get_raster_data()
-
+        if "list" in str(type(kwarg[key])):
+            for i in range(len(kwarg[key])):
+                if "cube" in str(type(kwarg[key][i])):
+                    kwarg[key][i] = kwarg[key][i].get_raster_data()
+        else:
+            if "cube" in str(type(kwarg[key])):
+                kwarg[key] = kwarg[key].get_raster_data()
     # do operations as below
     if function == None:
 

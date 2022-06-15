@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0c19522d-503b-4a0a-97dc-9dc52531479c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/spacetime/objects/writeNETCDF.py" beforeDir="false" afterPath="$PROJECT_DIR$/spacetime/objects/writeNETCDF.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/spacetime/operations/cubeSmasher.py" beforeDir="false" afterPath="$PROJECT_DIR$/spacetime/operations/cubeSmasher.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spacetime/operations/loadCube.py" beforeDir="false" afterPath="$PROJECT_DIR$/spacetime/operations/loadCube.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spacetime/operations/makeCube.py" beforeDir="false" afterPath="$PROJECT_DIR$/spacetime/operations/makeCube.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
