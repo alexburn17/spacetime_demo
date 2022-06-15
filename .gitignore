@@ -14,3 +14,4 @@ demoData/Carya_ovata_sim_disc_10km.tif
 demoData/2002.tif
 cubeOps.Rmd
 demoData/.DS_Store
+plotting.Rmd
