@@ -113,29 +113,62 @@ make_cube(data = fileObject, fileName = "test.nc4", organizeFiles = "filestovar"
 
 
 
-### `raster_align(data=None, resolution=None, SRS=None, noneVal=None)`
+### `raster_align(data=None, resolution=None, SRS=None, noneVal=None, algorithm="near")`
 * **Functionality:** Sets input object to have same spatial reference system and resolution and alignment.
 * **Input:** data = file object as outputted by `read_data()` 
 * **Output:** aligned and rescaled cube or file objects
 * **Additional Arguments:** 
-	* **resolution** = (numeric) intended grid size of the outputted data set in either degrees or meters depending on the spatial reference system in use.
-		* **Default value:** largest resolution in data set in input spacetime object
+	* **resolution** = (numeric or character) intended grid size of the outputted data set in either degrees or meters depending on the spatial reference system in use.
+		* **options:**
+			* "min" Down-scale all files to the resolution of the lowest resolution image
+			* "max" Up-scale all files to the resolution of the highest resolution image
+			* (numeric) a user specified resultion in the intended units of the output cube	  	
+		* **Default value:** "min"
 	* **SRS** = (int) intended 4-digit spatial reference system code that all data sets in the outputted spacetime object will use.
 		* **Default value:** EPSG of first data set in input object
 	* **noneVal** = (numeric) no data value to be used by all datasets in the outputted spacetime object.
 		* **Default value:** no data value of first data set in input spacetime object
+	* **algorithm:** (char) The intended algorithm to be used to rescale rasters
+		* **options:**
+			* near: nearest neighbour resampling (default, fastest algorithm, worst interpolation quality).
+			* bilinear: bilinear resampling.
+			* cubic: cubic resampling.
+			* cubicspline: cubic spline resampling.
+			* lanczos: Lanczos windowed sinc resampling.
+			* average: average resampling, computes the weighted average of all non-NODATA contributing pixels.
+			* rms root mean square / quadratic mean of all non-NODATA contributing pixels 
+			* mode: mode resampling, selects the value which appears most often of all th
+			* sampled points. In the case of ties, the first value identified as the mode will be selected.
+			* max: maximum resampling, selects the maximum value from all non-NODATA contributing pixels.
+			* min: minimum resampling, selects the minimum value from all non-NODATA contributing pixels.
+			* med: median resampling, selects the median value of all non-NODATA contributing pixels.
+			* q1: first quartile resampling, selects the first quartile value of all non-NODATA contributing pixels.
+			* q3: third quartile resampling, selects the third quartile value of all non-NODATA contributing pixels.
+			* sum: compute the weighted sum of all non-NODATA contributing pixels 
+		* **Default value:** "near"
 * Example function call:
 
 ```python
-dsAligned = raster_align(data=fileObj, resolution=.08, SRS=4326, noneVal=-9999)
+dsAligned = raster_align(data=fileObj, resolution=.08, SRS=4326, noneVal=-9999, algorithm="min")
 ``` 
 
 
-### `raster_trim(data=None)`
+### `raster_trim(data = None, method = "intersection", ul = None, lr = None, shapeFile = None)`
 * **Functionality:** Trims datasets in the input object to have the same bounding box (i.e. spatial dimensionality).
 * **Input:** data = aligned file as outputted by `data_align()` 
-* **Output:** file or cube object trimmed to greatest common bounding box
-* **Additional Arguments:** = None
+* **Output:** file or cube object trimmed using the specified method
+* **Additional Arguments:**
+	* **method:** Specifies the inteded trimming method.
+		* **Options:**
+			* "intersection" The smallest	bounding box that captures the area where all files overlap.
+			* *union" The bounding box that captures all data in all layers.
+			* "corners" Uses user provided upper left and lower right corners to create a bounding box.
+			* "shape" Uses a user provided shape file to trim rasters.  
+		* **Default value:** "intersection"
+		
+	* **ul:**	(list or tuple) Upper left corner as a latitude longitude pair  
+	* **lr:**	(list or tuple) Lower right corner as a latitude longitude pair
+	* **shapeFile:** (char) Name or path to shape file   
 * Example function call:
 
 ```python
