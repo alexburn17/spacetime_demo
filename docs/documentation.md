@@ -103,7 +103,7 @@ ds = read_data(data=rasterList)
 		* "filestovar" creates a higher dimensional cube where each cube is a different variable and time are bands within each raster. 	* **organizeBands** = how bands are treated when assembling the cube (chr).
 		* "bandstotime" = bands are a time dimension
 		* "bandstovar" = bands are variables
-	* **varNames** = a list of character strings that are the variable names for each file if the "filestovar" option is selected 
+	* **varNames** = a list of character strings that are the variable names for each file if the "filestovar" option is selected. If not specified, varaibles will be named 0 through n (number of variables). 
 	* **timeObj** = A time object created by `cube_time()` of the desired time length. If not specified, time defaults to integers 0 to length of cube stack.
 * Example function call:
 

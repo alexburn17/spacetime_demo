@@ -19,7 +19,7 @@ import numpy as np
 # OUTPUT:
 # It outputs a list of rescaled and geospatialy aligned rasters
 ######################################################################################################################
-def raster_align(data=None, resolution="min", SRS=None, noneVal=None):
+def raster_align(data=None, resolution="min", SRS=None, noneVal=None, algorithm="near"):
 
     if SRS == None:
         SRS_code = data.extract_epsg_code()[0]
@@ -50,11 +50,13 @@ def raster_align(data=None, resolution="min", SRS=None, noneVal=None):
         resolution = np.min(reso)
     if resolution == "min":
         resolution = np.max(reso)
+    else:
+        resolution = resolution
 
     # do transformation and alignment
     for i in range(objSize):
         dataMat[1][i] = gdal.Warp('', dataMat[0][i], targetAlignedPixels=True, dstSRS=SRS_code, format='VRT',
-        xRes=resolution, yRes=-resolution, dstNodata=noneVal) # format='MEM'
+        xRes=resolution, yRes=-resolution, dstNodata=noneVal, resampleAlg=algorithm) # format='MEM'
 
     #print((dataMat[1][0]).GetRasterBand(1).ReadAsArray())
     # make a cube object
