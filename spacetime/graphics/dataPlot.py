@@ -38,7 +38,7 @@ def plot_cube(cube, type="space", variable = None, summary="mean", showPlot = Tr
         
 
         coords = cube.upper_left_corner()
-        print(coords)
+        #print(coords)
         # plot the map
         fig = px.scatter_mapbox(dfPlot, lat='lat',
                                     lon='lon',

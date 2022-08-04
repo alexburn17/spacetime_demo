@@ -12,7 +12,6 @@ class interum_cube(object):
         self.array = array
         self.structure = structure
 
-
         if self.structure == True:
             self.names = np.array(array.variables)
             self.ind = self.names[0]
