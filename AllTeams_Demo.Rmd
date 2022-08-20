@@ -1,0 +1,58 @@
+---
+title: "Demonstration of Spacetime"
+output: html_document
+---
+
+Date created:  August 1, 2022            
+Author: P. Alexander Burnham
+
+
+**Load Python Environment**
+```{r setup}
+
+#load the reticulate package  
+library(reticulate)
+
+# activate environment
+use_condaenv(condaenv = "myCondaEnvironment", conda = "auto", required = FALSE)
+
+```
+
+**Check Python Version**
+```{python}
+import platform
+
+# make sure python 3.9 is loaded
+print(platform.python_version())
+```
+
+**Load Spacetime Files**
+```{python}
+from spacetime.input.readData import read_data
+from spacetime.scale.rasterAlign import raster_align
+from spacetime.scale.rasterTrim import raster_trim
+from spacetime.objects.fileObject import file_object
+from spacetime.operations.cubeSmasher import cube_smasher
+from spacetime.operations.makeCube import make_cube
+from spacetime.operations.loadCube import load_cube
+from spacetime.graphics.dataPlot import plot_cube
+from spacetime.operations.time import cube_time, return_time, scale_time, select_time
+from spacetime.operations.cubeToDataframe import cube_to_dataframe
+import matplotlib.pyplot as plt
+```
+
+**Here is our main script**
+```{python}
+
+# read files
+#data = ["demoData/LULC_1995.tif", "demoData/India_cropped-area_1km_2016.tif"]
+data = ["demoData/stanford-vb513xp0680-geotiff.tif"]
+
+# load data
+ds <- read_data(data)
+
+rs <- raster_align(data=ds)
+
+
+```
+
