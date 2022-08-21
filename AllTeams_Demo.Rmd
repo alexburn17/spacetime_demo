@@ -44,14 +44,19 @@ import matplotlib.pyplot as plt
 **Here is our main script**
 ```{python}
 
+# make script
+# make notebook
+# make demo video
+# load all to page
+
 # read files
-#data = ["demoData/LULC_1995.tif", "demoData/India_cropped-area_1km_2016.tif"]
-data = ["demoData/stanford-vb513xp0680-geotiff.tif"]
+data = ["demoData/LULC_1995.tif", "demoData/India_cropped-area_1km_2016.tif"]
 
 # load data
-ds <- read_data(data)
+ds = read_data(data)
 
-rs <- raster_align(data=ds)
+rs = raster_align(data=ds)
+
 
 
 ```
