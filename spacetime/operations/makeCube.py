@@ -49,7 +49,7 @@ def make_cube(data = None, fileName = None, organizeFiles="filestotime", organiz
         # if files are one variable to stack
         if organizeFiles == "filestotime" and organizeBands == "bandstotime":
 
-            outMat = np.dstack(dataSplit[0]) # stack data arrays
+            outMat = np.dstack(tempMat) # stack data arrays
             fullCube = gdal.BuildVRT("", dataList, separate=True) # make a virtual cube for vrt layers
             gdalCube = cube_meta(fullCube) # make gdal cube to query data and metadata
             preCube = write_netcdf(cube=gdalCube, dataset=outMat, fileName=fileName, organizeFiles = "filestotime", organizeBands = "bandstotime", timeObj = time) # make netcdf4 cube
@@ -74,7 +74,6 @@ def make_cube(data = None, fileName = None, organizeFiles="filestotime", organiz
                 arrayCube.append(outMat[:, :, 0::numBands])
                 gdalCube.append(dataList[0::numBands])
 
-            #print(arrayCube[0].shape)
 
             metaDataMerge = merge_layers(gdalCube, raster=True)
             #dataMerge = merge_layers(arrayCube, raster=False)
@@ -114,6 +113,7 @@ def make_cube(data = None, fileName = None, organizeFiles="filestotime", organiz
         lon = data.get_longitude()
         array = data.get_raster_data()
         varNames = data.get_names()
+        print(time)
 
         if type(varNames) != type(None):
             preCube = write_netcdf(cube=data, dataset=array, fileName=fileName, organizeFiles = "filestovar",organizeBands="bandstotime", vars=varNames, timeObj = time) # make netcdf4 cube

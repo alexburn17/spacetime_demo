@@ -21,29 +21,30 @@ import re
 
 # read in data set
 ########################################################################################################################
-# a list of paths to raster files
-file1 = "/Users/pburnham/Documents/geospatialData/Carya_ovata/Carya_ovata_sim_disc_1km.tif"
-file2 = "/Users/pburnham/Documents/geospatialData/Carya_ovata/Carya_ovata_sim_disc_10km.tif"
+# # a list of paths to raster files
+# file1 = "/Users/pburnham/Documents/geospatialData/Carya_ovata/Carya_ovata_sim_disc_1km.tif"
+# file2 = "/Users/pburnham/Documents/geospatialData/Carya_ovata/Carya_ovata_sim_disc_10km.tif"
+#
+#
+# data = [file2, file2]
+#
+# # read data from list of files and make a spaceTime file object
+# ds = read_data(data)
+# ##########################################################################
+#
+# # align the rasters to the same epsg codes and grid size
+# newObj = raster_align(data=ds)
+#
+# # trim the rasters to the same greatest common bounding box
+# trimmed = raster_trim(newObj)
+#
+# # create spacetime time object
+# yearObj = cube_time(start="2000-12-31", length=101, scale = "month")
+#
+#
+# # make the alinged file object into a cube with a time element (writes the new file to disk)
+# ds = make_cube(data = trimmed, fileName = "test.nc4", organizeFiles = "filestovar", organizeBands = "bandstotime", timeObj = yearObj) #varNames=names
 
-
-data = [file2, file2]
-
-# read data from list of files and make a spaceTime file object
-ds = read_data(data)
-##########################################################################
-
-# align the rasters to the same epsg codes and grid size
-newObj = raster_align(data=ds)
-
-# trim the rasters to the same greatest common bounding box
-trimmed = raster_trim(newObj)
-
-# create spacetime time object
-yearObj = cube_time(start="2000-12-31", length=101, scale = "month")
-
-
-# make the alinged file object into a cube with a time element (writes the new file to disk)
-ds = make_cube(data = trimmed, fileName = "test.nc4", organizeFiles = "filestovar", organizeBands = "bandstotime", timeObj = yearObj) #varNames=names
 
 # sub = select_time(cube=ds, range=['2000-12-31', '2010-12-31'])
 #
@@ -71,7 +72,7 @@ ds = make_cube(data = trimmed, fileName = "test.nc4", organizeFiles = "filestova
 # answer = cube_smasher(eq = "a * c", a = y, c = 5, parentCube = y)
 #
 # # plot the cube and output the data set in dataframe format that made the plot
-plot_cube(cube=ds, variable="1", type="time_series", summary = "max", showPlot = True)
+#plot_cube(cube=ds, variable="1", type="time_series", summary = "max", showPlot = True)
 
 # # convert a cube into a dataframe
 # df = cube_to_dataframe(cube=ds)
@@ -190,10 +191,17 @@ plot_cube(cube=ds, variable="1", type="time_series", summary = "max", showPlot =
 # ds = load_cube(file = newCube)
 
 
+data = ["demoData/LULC_1995.tif", "demoData/India_cropped-area_1km_2016.tif"]
 
+fo = read_data(data)
+alignedFO = raster_align(data=fo, resolution=0.08, SRS=4326, noneVal=127)
+trimmedFO = raster_trim(alignedFO, method = "intersection")
 
+yearObj = cube_time(start="1995", length=2, scale = "year", skips = 21)
+# set files as the variables and bands within each file as time variables
+cube = make_cube(data = trimmedFO, fileName = "indiaCube.nc4", organizeFiles = "filestotime", organizeBands="bandstotime", timeObj = yearObj)
 
-
+plot_cube(cube=cube, type="time_series", showPlot=True)
 
 
 

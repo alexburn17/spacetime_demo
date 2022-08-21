@@ -4,6 +4,8 @@
     <list default="true" id="0c19522d-503b-4a0a-97dc-9dc52531479c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.Rhistory" beforeDir="false" afterPath="$PROJECT_DIR$/.Rhistory" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AllTeams_Demo.Rmd" beforeDir="false" afterPath="$PROJECT_DIR$/AllTeams_Demo.Rmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spacetime/operations/makeCube.py" beforeDir="false" afterPath="$PROJECT_DIR$/spacetime/operations/makeCube.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/testDriver.py" beforeDir="false" afterPath="$PROJECT_DIR$/testDriver.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -22,6 +24,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunManager">
     <configuration name="testDriver" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
