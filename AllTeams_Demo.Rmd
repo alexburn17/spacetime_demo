@@ -48,11 +48,6 @@ import matplotlib.pyplot as plt
 ### Stacking two differently formatted files
 ```{python}
 
-# make script
-# make notebook
-# make demo video
-# load all to page
-
 # read files
 data = ["walkthrough_data/LULC_1995.tif", "walkthrough_data/India_cropped-area_1km_2016.tif"]
 
@@ -114,7 +109,7 @@ plt.show()
 **The files are aligned but have different bounding boxes**
 ```{python}
 # here we use an intersection to trim the files. "union", pairs of corners and shape files are also options
-trimmedFO = raster_trim(alignedFO, method = "intersection")
+trimmedFO = raster_trim(data = alignedFO, method = "intersection")
 
 # check the raster dimensions to ensure we have a successful intersection
 trimmedFO.get_raster_dimensions() 
