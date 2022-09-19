@@ -29,7 +29,7 @@ def make_cube(data = None, fileName = None, organizeFiles="filestotime", organiz
             if organizeFiles == "filestovar" and organizeBands == "bandstotime":
                 time = np.arange(len(data.extract_time()[0]))
 
-        for i in range(len(data.extract_original_data())):
+        for i in range(len(data.extract_time())):
 
             tempArray = data.get_raster_data()[i]
             obj = data.extract_original_data()[i]
@@ -41,6 +41,7 @@ def make_cube(data = None, fileName = None, organizeFiles="filestotime", organiz
             for j in range(bandNum):
                 # build vrt object
                 dataList.append(gdal.BuildVRT("", obj, bandList = [j+1]))
+
 
         # split meta data cube and data by number of bands
         metaDataSplit = split_list(input = dataList, index = numBands)
@@ -55,52 +56,54 @@ def make_cube(data = None, fileName = None, organizeFiles="filestotime", organiz
             preCube = write_netcdf(cube=gdalCube, dataset=outMat, fileName=fileName, organizeFiles = "filestotime", organizeBands = "bandstotime", timeObj = time) # make netcdf4 cube
             cubeObj = cube(preCube, fileStruc = "filestotime", timeObj=time) # make a cube object
 
-        # if files are multi variable to stack
         if organizeFiles == "filestotime" and organizeBands == "bandstovar":
-
-            outMat = np.dstack(dataSplit[0]) # stack data arrays
-            numBands = int(outMat.shape[2]/len(time))
-
-            # if no var names given generate letters A-Z
-            if varNames == None:
-                names = list(range(numBands))
-                varNames = list(map(str, names))
-
-            # create sub cubes for vrrt and array for each band variable
-            arrayCube = []
-            gdalCube = []
-
-            for i in range(numBands):
-                arrayCube.append(outMat[:, :, 0::numBands])
-                gdalCube.append(dataList[0::numBands])
-
-
-            metaDataMerge = merge_layers(gdalCube, raster=True)
-            #dataMerge = merge_layers(arrayCube, raster=False)
-
-            metaCube = []
-            for i in range(len(metaDataMerge)):
-                metaCube.append(cube_meta(metaDataMerge[i]))
-
-            preCube = write_netcdf(cube=metaCube[0], dataset=arrayCube, fileName=fileName, organizeFiles = "filestotime", organizeBands="bandstovar", vars=varNames, timeObj = time) # make netcdf4 cube
-            cubeObj = cube(preCube, fileStruc = "filestovar", names=varNames, timeObj=time)
-
-        # if files are each one variable
-        if organizeFiles == "filestovar" and organizeBands == "bandstotime":
 
             # merge data and metadata
             metaDataMerge = merge_layers(metaDataSplit, raster=True)
-            dataMerge = merge_layers(dataSplit, raster=False)
+            dataMerge = merge_layers(tempMat, raster=False)
 
             # take each vrt object and make cube meta object
             gdalCube = []
             for i in range(len(metaDataMerge)):
                 gdalCube.append(cube_meta(metaDataMerge[i]))
 
-            # if no var names given generate letters A-Z
+            # if no var names given generate numbers
+            if varNames == None:
+                names = list(range(numBands[0]))
+                varNames = list(map(str, names))
+
+            # stack the arrays
+            stacked = np.stack(dataMerge)
+
+            # change indexes
+            # Var, Lat, Lon, Time -> Time, Lat, Lon, Var
+            arranged = np.moveaxis(stacked, [3,0], [0,3])
+
+            #split into a list of arrays for each variable instead of for time
+            dataOut = split_list(arranged, [1]*len(varNames), squeeze = True)
+
+            preCube = write_netcdf(cube=gdalCube[0], dataset=dataOut, fileName=fileName, organizeFiles = "filestovar", organizeBands="bandstotime", vars=varNames, timeObj = time) # make netcdf4 cube
+            cubeObj = cube(preCube, fileStruc = "filestovar", names=varNames, timeObj=time)
+
+
+        # if files are each one variable
+        if organizeFiles == "filestovar" and organizeBands == "bandstotime":
+
+            # merge data and metadata
+            metaDataMerge = merge_layers(metaDataSplit, raster=True)
+
+            dataMerge = merge_layers(tempMat, raster=False)
+
+            # take each vrt object and make cube meta object
+            gdalCube = []
+            for i in range(len(metaDataMerge)):
+                gdalCube.append(cube_meta(metaDataMerge[i]))
+
+            # if no var names given generate numbers
             if varNames == None:
                 names = list(range(len(gdalCube)))
                 varNames = list(map(str, names))
+
 
             preCube = write_netcdf(cube=gdalCube[0], dataset=dataMerge, fileName=fileName, organizeFiles = "filestovar", organizeBands="bandstotime", vars=varNames, timeObj = time) # make netcdf4 cube
             cubeObj = cube(preCube, fileStruc = "filestovar", names=varNames, timeObj=time)
@@ -113,7 +116,6 @@ def make_cube(data = None, fileName = None, organizeFiles="filestotime", organiz
         lon = data.get_longitude()
         array = data.get_raster_data()
         varNames = data.get_names()
-        print(time)
 
         if type(varNames) != type(None):
             preCube = write_netcdf(cube=data, dataset=array, fileName=fileName, organizeFiles = "filestovar",organizeBands="bandstotime", vars=varNames, timeObj = time) # make netcdf4 cube
@@ -132,11 +134,16 @@ def make_cube(data = None, fileName = None, organizeFiles="filestotime", organiz
 
 #################################################
 # helper function to split list by band numbers
-def split_list(input, index):
+def split_list(input, index, squeeze=False):
 
-    # split lists
-    out = [input[x - y: x] for x, y in zip(
-        accumulate(index), index)]
+    if squeeze == False:
+        out = [input[x - y: x] for x, y in zip(
+            accumulate(index), index)]
+    else:
+        out = [np.squeeze(input[x - y: x]) for x, y in zip(
+            accumulate(index), index)]
+
+
 
     return out
 #################################################
@@ -148,11 +155,11 @@ def split_list(input, index):
 def merge_layers(data, raster=False):
 
     subCubeList = []
-    for i in range(len(data)):
+    for i in range(len(data)): # nt len of data but time or vars?
 
         if raster == False:
 
-            subCube = np.dstack(data[0][i])
+            subCube = np.dstack(data[i]) # these indexes are reversed between the two data sets
             subCube = np.moveaxis(subCube, 2, 0)
 
         if raster == True:
@@ -163,3 +170,4 @@ def merge_layers(data, raster=False):
 
     return subCubeList
 #################################################
+
