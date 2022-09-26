@@ -26,7 +26,7 @@ def raster_trim(data = None, method = "intersection", ul = None, lr = None, shap
     outList = [] # initialize a list
 
     # bring in raster objects
-    rastList = data.extract_original_data()
+    rastList = data.get_GDAL_data()
 
     # create matrix for storing corner data
     cornerArray = np.empty(shape=(len(rastList),4))

@@ -19,17 +19,17 @@ import numpy as np
 # OUTPUT:
 # It outputs a list of rescaled and geospatialy aligned rasters
 ######################################################################################################################
-def raster_align(data=None, resolution="min", SRS=None, noneVal=None, algorithm="near"):
+def raster_align(data=None, resolution="min", SRS=4326, noneVal=None, algorithm="near"):
 
     if SRS == None:
-        SRS_code = data.extract_epsg_code()[0]
+        SRS_code = data.get_epsg_code()[0]
     else:
         # define the espg code as a character for GDAL
         SRS_code = "EPSG:" + str(SRS)
     if noneVal == None:
         noneVal = data.get_nodata_value()[0]
 
-    objSize = len(data.extract_epsg_code()) # time dimension for list
+    objSize = len(data.get_epsg_code()) # time dimension for list
 
     # initialize a mat to store files in during the loop and one to store the modification
     dataMat = [[0] * objSize for i in range(2)]
@@ -39,7 +39,7 @@ def raster_align(data=None, resolution="min", SRS=None, noneVal=None, algorithm=
 
     # create a list of rasters in first column
     for i in range(objSize):
-        dataMat[0][i] = data.extract_original_data()[i]
+        dataMat[0][i] = data.get_GDAL_data()[i]
 
         # get list of resolutions
         ps = gdal.Warp('', dataMat[0][i], dstSRS=SRS_code, format='VRT')

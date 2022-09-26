@@ -29,18 +29,18 @@ class cube(object):
         else:
             self.noTime = False
 
-    def extract_original_data(self):
+    def get_GDAL_data(self):
         return self.cubeObj
 
-    def extract_units(self):
+    def get_units(self):
         out = self.cubeObj.variables['lon'].units
         return out
 
-    def number_of_bands(self):
+    def get_band_number(self):
         out = self.cubeObj.variables["time"].shape[0]
         return out
 
-    def extract_time(self):
+    def get_time(self):
 
         if self.noTime == True:
             out = self.cubeObj.variables["time"][:]
@@ -52,56 +52,56 @@ class cube(object):
 
         return out
 
-    def get_raster_dimensions(self):
+    def get_dims(self):
         y = len(self.cubeObj.variables["lat"][:])
         x = len(self.cubeObj.variables["lon"][:])
         out = [x, y]
         return out
 
-    def get_latitude(self):
+    def get_lat(self):
         out = self.cubeObj.variables["lat"][:]
         return out
 
-    def get_longitude(self):
+    def get_lon(self):
         out = self.cubeObj.variables["lon"][:]
         return out
 
-    def upper_left_corner(self):
-        y = self.get_longitude()[0]
-        x = self.get_latitude()[0]
+    def get_UL_corner(self):
+        y = self.get_lon()[0]
+        x = self.get_lat()[0]
         out = [x,y]
         return out
 
-    def pixel_size(self):
-        long = self.get_longitude()
-        pixel_size = abs(long[0]-long[1])
-        return pixel_size
+    def get_pixel_size(self):
+        long = self.get_lon()
+        get_pixel_size = abs(long[0]-long[1])
+        return get_pixel_size
 
     def get_nodata_value(self):
         out = self.cubeObj.variables[self.ind].missing
         return out
 
-    def extract_epsg_code(self):
+    def get_epsg_code(self):
         out = self.cubeObj.variables[self.ind].code
         return out
 
-    def get_names(self):
+    def get_var_names(self):
         out = self.names
         return out
 
-    def spatial_reference(self):
+    def get_spatial_ref(self):
         out = self.cubeObj.variables["spatial_ref"]
         return out
 
-    def get_raster_data(self, variables=None):
+    def get_data_array(self, variables=None):
 
         if self.fileStruc == "filestotime":
             out = self.cubeObj.variables[self.ind][:]
 
             outMat = xr.DataArray(data=out, dims=["lat", "lon", "time"], coords=dict(
-               lon=(["lon"], self.get_longitude()),
-               lat=(["lat"], self.get_latitude()),
-               time=self.extract_time()))
+               lon=(["lon"], self.get_lon()),
+               lat=(["lat"], self.get_lat()),
+               time=self.get_time()))
 
         if self.fileStruc == "filestovar":
 
@@ -113,9 +113,9 @@ class cube(object):
 
             out = xr.DataArray(data=intDS, dims=["variables" ,"lat", "lon", "time"], coords=dict(
                   variables = (["variables"], self.names),
-                  lon=(["lon"], self.get_longitude()),
-                  lat=(["lat"], self.get_latitude()),
-                  time=self.extract_time()))
+                  lon=(["lon"], self.get_lon()),
+                  lat=(["lat"], self.get_lat()),
+                  time=self.get_time()))
 
             # allow selecting of vars
             if variables == None:
@@ -127,8 +127,10 @@ class cube(object):
 
         return outMat
 
+
     def get_shapeval(self):
-        ds = self.get_raster_data()
+
+        ds = self.get_data_array()
         shapeVal = len(ds.shape)
 
         return shapeVal

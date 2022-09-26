@@ -7,7 +7,7 @@ def cube_smasher(function = None, eq = None, parentCube = None, **kwarg):
 
     # is there a parent cube and what is the file structure?
     if parentCube != None:
-        if type(parentCube.get_names()) == type(None):
+        if type(parentCube.get_var_names()) == type(None):
             filestovar = False
         else:
             filestovar = True
@@ -17,10 +17,10 @@ def cube_smasher(function = None, eq = None, parentCube = None, **kwarg):
         if "list" in str(type(kwarg[key])):
             for i in range(len(kwarg[key])):
                 if "cube" in str(type(kwarg[key][i])):
-                    kwarg[key][i] = kwarg[key][i].get_raster_data()
+                    kwarg[key][i] = kwarg[key][i].get_data_array()
         else:
             if "cube" in str(type(kwarg[key])):
-                kwarg[key] = kwarg[key].get_raster_data()
+                kwarg[key] = kwarg[key].get_data_array()
 
     # do operations as below
     if function == None:
@@ -34,12 +34,12 @@ def cube_smasher(function = None, eq = None, parentCube = None, **kwarg):
         out = y
 
     else:
-        time = parentCube.extract_time()
-        lon = parentCube.get_latitude()
-        lat = parentCube.get_longitude()
-        variables = parentCube.get_names()
+        time = parentCube.get_time()
+        lon = parentCube.get_lat()
+        lat = parentCube.get_lon()
+        variables = parentCube.get_var_names()
 
-        c = np.where(parentCube.get_raster_data() == parentCube.get_nodata_value(), parentCube.get_nodata_value(), y) #, parentCube.get_raster_data(), y
+        c = np.where(parentCube.get_data_array() == parentCube.get_nodata_value(), parentCube.get_nodata_value(), y) #, parentCube.get_data_array(), y
 
         y = xr.DataArray(data=c, dims=["variables" ,"lon", "lat", "time"], coords=dict(
             variables = (["variables"], variables),

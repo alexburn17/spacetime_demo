@@ -31,17 +31,17 @@ class cube_meta(object):
 
 
     # returns a list of gdal or netcdf4 objects
-    def extract_original_data(self):
+    def get_GDAL_data(self):
 
         return self.cubeObj[0]
 
-    def spatial_reference(self):
+    def get_spatial_ref(self):
         out = self.cubeObj[0].GetProjection()
         return out
 
 
     # returns a list of SRS codes for each raster
-    def extract_epsg_code(self):
+    def get_epsg_code(self):
 
         code = self.cubeObj[1].GetAttrValue('AUTHORITY',1)
         epsg = ("EPSG:" + str(code))
@@ -49,7 +49,7 @@ class cube_meta(object):
         return epsg
 
 
-    def extract_units(self):
+    def get_units(self):
 
 
         unit = self.cubeObj[1].GetAttrValue('UNIT',0)
@@ -58,7 +58,7 @@ class cube_meta(object):
 
 
 
-    def upper_left_corner(self):
+    def get_UL_corner(self):
 
 
         v = self.cubeObj[2]
@@ -68,7 +68,7 @@ class cube_meta(object):
 
 
 
-    def pixel_size(self):
+    def get_pixel_size(self):
 
         v = self.cubeObj[2]
         size = v[1]
@@ -76,7 +76,7 @@ class cube_meta(object):
         return size
 
 
-    def number_of_bands(self):
+    def get_band_number(self):
 
 
         bands = self.cubeObj[0].RasterCount
@@ -84,11 +84,11 @@ class cube_meta(object):
         return bands
 
 
-    def extract_time(self):
+    def get_time(self):
 
         return self.cubeObj[3]
 
-    def get_raster_dimensions(self):
+    def get_dims(self):
 
         xDim = self.cubeObj[0].RasterXSize
         yDim = self.cubeObj[0].RasterYSize
@@ -116,16 +116,16 @@ class cube_meta(object):
         return noDat
 
 
-    def get_latitude(self):
+    def get_lat(self):
 
         # pixel size
-        ysize = -self.pixel_size()
+        ysize = -self.get_pixel_size()
 
         # dimensions
-        height = self.get_raster_dimensions()[1]
+        height = self.get_dims()[1]
 
         # upper left corner
-        y = self.upper_left_corner()[0]
+        y = self.get_UL_corner()[0]
 
         # dimensions from 0 to max dims of dataset
         my=np.arange(start=0, stop=height)
@@ -137,16 +137,16 @@ class cube_meta(object):
 
 
 
-    def get_longitude(self):
+    def get_lon(self):
 
         # pixel size
-        xsize = self.pixel_size()
+        xsize = self.get_pixel_size()
 
         # dimensions
-        width = self.get_raster_dimensions()[0]
+        width = self.get_dims()[0]
 
         # upper left corner
-        x = self.upper_left_corner()[1]
+        x = self.get_UL_corner()[1]
 
         # dimensions from 0 to max dims of dataset
         mx=np.arange(start=0, stop=width)

@@ -23,17 +23,20 @@ def make_cube(data = None, fileName = None, organizeFiles="filestotime", organiz
 
             # set up time dimension
             if organizeFiles == "filestotime" and organizeBands == "bandstotime":
-                time = np.arange(len(data.extract_time()[0]) * len(data.extract_time()))
+                time = np.arange(len(data.get_time()[0]) * len(data.get_time()))
             if organizeFiles == "filestotime" and organizeBands == "bandstovar":
-                time = np.arange(len(data.extract_time()))
+                time = np.arange(len(data.get_time()))
             if organizeFiles == "filestovar" and organizeBands == "bandstotime":
-                time = np.arange(len(data.extract_time()[0]))
+                time = np.arange(len(data.get_time()[0]))
+            if organizeFiles == "filestovar" and organizeBands == "bandstovar":
+                time = np.arange(1)
+                numVars = len(np.arange(len(data.get_time()[0]) * len(data.get_time())))
 
-        for i in range(len(data.extract_time())):
+        for i in range(len(data.get_time())):
 
-            tempArray = data.get_raster_data()[i]
-            obj = data.extract_original_data()[i]
-            bandNum = data.number_of_bands()[i]
+            tempArray = data.get_data_array()[i]
+            obj = data.get_GDAL_data()[i]
+            bandNum = data.get_band_number()[i]
 
             tempMat.append(tempArray)
             numBands.append(bandNum)
@@ -53,6 +56,7 @@ def make_cube(data = None, fileName = None, organizeFiles="filestotime", organiz
             outMat = np.dstack(tempMat) # stack data arrays
             fullCube = gdal.BuildVRT("", dataList, separate=True) # make a virtual cube for vrt layers
             gdalCube = cube_meta(fullCube) # make gdal cube to query data and metadata
+
             preCube = write_netcdf(cube=gdalCube, dataset=outMat, fileName=fileName, organizeFiles = "filestotime", organizeBands = "bandstotime", timeObj = time) # make netcdf4 cube
             cubeObj = cube(preCube, fileStruc = "filestotime", timeObj=time) # make a cube object
 
@@ -85,6 +89,36 @@ def make_cube(data = None, fileName = None, organizeFiles="filestotime", organiz
             preCube = write_netcdf(cube=gdalCube[0], dataset=dataOut, fileName=fileName, organizeFiles = "filestovar", organizeBands="bandstotime", vars=varNames, timeObj = time) # make netcdf4 cube
             cubeObj = cube(preCube, fileStruc = "filestovar", names=varNames, timeObj=time)
 
+        # if files are each one variable
+        if organizeFiles == "filestovar" and organizeBands == "bandstovar":
+
+            outMat = np.dstack(tempMat) # stack data arrays
+
+            # merge data and metadata
+            metaDataMerge = merge_layers(metaDataSplit, raster=True)
+
+            # take each vrt object and make cube meta object
+            gdalCube = []
+            for i in range(len(metaDataMerge)):
+                gdalCube.append(cube_meta(metaDataMerge[i]))
+
+            # if no var names given generate numbers
+            if varNames == None:
+                names = list(range(numVars))
+                varNames = list(map(str, names))
+
+            # add time dimension back in
+            outMat = np.expand_dims(outMat, axis=3)
+
+            # arrange dims
+            arranged = np.moveaxis(outMat, 2, 0)
+
+            #split into a list of arrays for each variable instead of for time
+            dataOut = split_list(arranged, [1]*len(varNames), squeeze = False)
+
+            preCube = write_netcdf(cube=gdalCube[0], dataset=dataOut, fileName=fileName, organizeFiles = "filestovar", organizeBands="bandstovar", vars=varNames, timeObj = time) # make netcdf4 cube
+            cubeObj = cube(preCube, fileStruc = "filestovar", names=varNames, timeObj=time)
+
 
         # if files are each one variable
         if organizeFiles == "filestovar" and organizeBands == "bandstotime":
@@ -111,11 +145,11 @@ def make_cube(data = None, fileName = None, organizeFiles="filestotime", organiz
     # if the object is already a cube and needs to be written back out
     else:
 
-        time = data.extract_time()
-        lat = data.get_latitude()
-        lon = data.get_longitude()
-        array = data.get_raster_data()
-        varNames = data.get_names()
+        time = data.get_time()
+        lat = data.get_lat()
+        lon = data.get_lon()
+        array = data.get_data_array()
+        varNames = data.get_var_names()
 
         if type(varNames) != type(None):
             preCube = write_netcdf(cube=data, dataset=array, fileName=fileName, organizeFiles = "filestovar",organizeBands="bandstotime", vars=varNames, timeObj = time) # make netcdf4 cube

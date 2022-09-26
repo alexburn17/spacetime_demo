@@ -7,8 +7,8 @@ def write_netcdf(cube, dataset, fileName, organizeFiles, organizeBands, vars=Non
 
     # inmtialize vars by creating dimensions
     time = ds.createDimension('time', len(timeObj)) # no time var in this case
-    lat = ds.createDimension('lat', cube.get_raster_dimensions()[1])
-    lon = ds.createDimension('lon', cube.get_raster_dimensions()[0])
+    lat = ds.createDimension('lat', cube.get_dims()[1])
+    lon = ds.createDimension('lon', cube.get_dims()[0])
 
     # create variables in the data set
     time = ds.createVariable('time', 'float64', ('time',))
@@ -17,23 +17,23 @@ def write_netcdf(cube, dataset, fileName, organizeFiles, organizeBands, vars=Non
 
 
     #value.units = 'My Units'
-    lons.units = cube.extract_units()
-    lats.units = cube.extract_units()
+    lons.units = cube.get_units()
+    lats.units = cube.get_units()
 
 
-    ds.variables['lat'][:] = cube.get_latitude()
-    ds.variables['lon'][:] = cube.get_longitude()
+    ds.variables['lat'][:] = cube.get_lat()
+    ds.variables['lon'][:] = cube.get_lon()
     crs = ds.createVariable('spatial_ref', 'i4')
-    crs.spatial_ref = cube.spatial_reference()
+    crs.spatial_ref = cube.get_spatial_ref()
 
     # each file is a variable
     ############################################################################################
     if organizeFiles == "filestovar" or organizeBands=="bandstovar":
-
+        
         for i in range(len(vars)):
 
             value = ds.createVariable(vars[i], 'f4', ('lat', 'lon', 'time',))
-            value.code =  cube.extract_epsg_code()
+            value.code =  cube.get_epsg_code()
 
             if cube.get_nodata_value() != None:
                 value.missing = cube.get_nodata_value()
@@ -66,10 +66,10 @@ def write_netcdf(cube, dataset, fileName, organizeFiles, organizeBands, vars=Non
 
     # all files are times and must be stacked into one 3d cube
     ############################################################################################
-    if organizeFiles == "filestotime" and organizeBands!="bandstovar":
+    if organizeFiles == "filestotime" and organizeBands == "bandstotime":
 
         value = ds.createVariable('value', 'f4', ('lat', 'lon', 'time',))
-        value.code =  cube.extract_epsg_code()
+        value.code =  cube.get_epsg_code()
         if cube.get_nodata_value() != None:
             value.missing = cube.get_nodata_value()
         else:
@@ -87,6 +87,8 @@ def write_netcdf(cube, dataset, fileName, organizeFiles, organizeBands, vars=Non
             timedelta = timeObj-timeObj[0]
             seconds = timedelta.astype('timedelta64[s]').astype(np.int32)
             ds.variables['time'][:] = seconds
+
+
     ############################################################################################
 
     return ds

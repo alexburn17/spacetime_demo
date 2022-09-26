@@ -44,7 +44,7 @@ def return_time(timeObject):
 ########################################################################################################################
 def select_time(cube, range="entire", scale = None, element=None):
 
-    ds  = cube.get_raster_data()
+    ds  = cube.get_data_array()
 
     if range == "entire":
 
@@ -89,11 +89,11 @@ def select_time(cube, range="entire", scale = None, element=None):
 ########################################################################################################################
 def scale_time(cube, scale, method):
 
-    format = cube.extract_time()
+    format = cube.get_time()
 
     if "DatetimeIndex" in str(type(format)):
 
-        dictArray = cube.get_raster_data()
+        dictArray = cube.get_data_array()
         ds = dictArray.where(dictArray != cube.get_nodata_value())
 
         if scale == "month" and method == "mean":

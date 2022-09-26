@@ -4,7 +4,7 @@ import numpy as np
 def cube_to_dataframe(cube):
 
     # load data
-    ds = cube.get_raster_data()
+    ds = cube.get_data_array()
     shapeVal = len(ds.shape)
 
     # if 3d or 4d data

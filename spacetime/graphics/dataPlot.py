@@ -85,7 +85,7 @@ def plot_spatial(cube, df) -> go.Figure:
     time = df["timeChar"]
     maxVal = np.nanmax(df["value"])
 
-    coords = cube.upper_left_corner()
+    coords = cube.get_UL_corner()
 
     fig = px.scatter_mapbox(
         df,

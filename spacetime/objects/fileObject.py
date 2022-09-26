@@ -35,13 +35,13 @@ class file_object(object):
 
 
     # returns a list of gdal or netcdf4 objects
-    def extract_original_data(self):
+    def get_GDAL_data(self):
 
         return self.spacetimeObject[0]
 
 
     # returns a list of SRS codes for each raster
-    def extract_epsg_code(self):
+    def get_epsg_code(self):
 
         epsgList = []
         for i in range(len(self.spacetimeObject[0])):
@@ -53,7 +53,7 @@ class file_object(object):
 
 
 
-    def extract_units(self):
+    def get_units(self):
 
         unitList = []
         for i in range(len(self.spacetimeObject[0])):
@@ -65,7 +65,7 @@ class file_object(object):
 
 
 
-    def upper_left_corner(self):
+    def get_UL_corner(self):
 
         cornerList = []
         for i in range(len(self.spacetimeObject[0])):
@@ -80,7 +80,7 @@ class file_object(object):
 
 
 
-    def pixel_size(self):
+    def get_pixel_size(self):
 
         sizeList = []
         for i in range(len(self.spacetimeObject[0])):
@@ -93,7 +93,7 @@ class file_object(object):
         return sizeList
 
 
-    def number_of_bands(self):
+    def get_band_number(self):
 
         bandList = []
         for i in range(len(self.spacetimeObject[0])):
@@ -105,11 +105,11 @@ class file_object(object):
         return bandList
 
 
-    def extract_time(self):
+    def get_time(self):
 
         return self.spacetimeObject[3]
 
-    def get_raster_dimensions(self):
+    def get_dims(self):
 
         dimList = []
         for i in range(len(self.spacetimeObject[0])):
@@ -175,20 +175,20 @@ class file_object(object):
         return outList
 
 
-    def get_latitude(self):
+    def get_lat(self):
 
         outList = []
 
         for i in range(len(self.spacetimeObject[0])):
 
             # pixel size
-            ysize = -self.pixel_size()[i]
+            ysize = -self.get_pixel_size()[i]
 
             # dimensions
-            height = self.get_raster_dimensions()[i][1]
+            height = self.get_dims()[i][1]
 
             # upper left corner
-            y = self.upper_left_corner()[i][0]
+            y = self.get_UL_corner()[i][0]
 
             # dimensions from 0 to max dims of dataset
             my=np.arange(start=0, stop=height)
@@ -201,20 +201,20 @@ class file_object(object):
         return outList
 
 
-    def get_longitude(self):
+    def get_lon(self):
 
         outList = []
 
         for i in range(len(self.spacetimeObject[0])):
 
             # pixel size
-            xsize = self.pixel_size()[i]
+            xsize = self.get_pixel_size()[i]
 
             # dimensions
-            width = self.get_raster_dimensions()[i][0]
+            width = self.get_dims()[i][0]
 
             # upper left corner
-            x = self.upper_left_corner()[i][1]
+            x = self.get_UL_corner()[i][1]
 
             # dimensions from 0 to max dims of dataset
             mx=np.arange(start=0, stop=width)
@@ -227,8 +227,14 @@ class file_object(object):
         return outList
 
 
+    def get_spatial_ref(self):
+        outList = []
 
-    def get_raster_data(self):
+        out = self.cubeObj.variables["spatial_ref"]
+        return out
+
+
+    def get_data_array(self):
 
         outList = []
 
@@ -237,7 +243,7 @@ class file_object(object):
             tempMat = []
             obj = self.spacetimeObject[0][i]
 
-            for j in range(self.number_of_bands()[i]):
+            for j in range(self.get_band_number()[i]):
 
                 band = obj.GetRasterBand(j+1).ReadAsArray()
                 tempMat.append(band)
@@ -246,32 +252,6 @@ class file_object(object):
             outList.append(outMat)
 
         return outList
-
-
-
-    def change_time(self, start, stop, interval):
-
-        for i in range(len(self.spacetimeObject[0])):
-
-            if isinstance(start, int) == True:
-                start = np.repeat(start, len(self.spacetimeObject[0]))
-            if isinstance(stop, int) == True:
-                stop = np.repeat(stop, len(self.spacetimeObject[0]))
-            if isinstance(interval, int) == True:
-                interval = np.repeat(interval, len(self.spacetimeObject[0]))
-
-            times = np.arange(start[i], stop[i], interval[i])
-
-            if len(times) == self.number_of_bands()[i]:
-
-                self.spacetimeObject[3][i] = times
-
-            else:
-
-                raise ValueError('length of time array does not equal the number of bands in the data set!')
-                quit() # exit program and display message when no file names provided
-
-
 
 
 
