@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: spacetime
+Version: 0.0.2
+Summary: A toolkit for working with spatiotemporal data
+Author: P. A. Burnham et al.
+Author-email: alexburn17@gmail.com
+License: GNU GPLv3
+License-File: LICENSE.txt

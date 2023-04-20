@@ -1,28 +1,30 @@
-import matplotlib.pyplot as plt
-import glob
-from osgeo import gdal
-import numpy as np
-import pandas as pd
-import netCDF4 as nc
-import os
-import subprocess
-from on_load import load_spacetime
+# import matplotlib.pyplot as plt
+# import glob
+# from osgeo import gdal
+# import numpy as np
+# import pandas as pd
+# import netCDF4 as nc
+# import os
+# import subprocess
+# from on_load import load_spacetime
+#
+# # load spacetime
+# load_spacetime()
 
-# load spacetime
-load_spacetime()
+#from spacetime import spacetime as st
 
 
 # read in data set
 ########################################################################################################################
 # a list of paths to raster files
-file1 = "/Users/pburnham/Documents/geospatialData/Carya_ovata/Carya_ovata_sim_disc_1km.tif"
-file2 = "/Users/pburnham/Documents/geospatialData/Carya_ovata/Carya_ovata_sim_disc_10km.tif"
+#file1 = "/Users/pburnham/Documents/geospatialData/Carya_ovata/Carya_ovata_sim_disc_1km.tif"
+#file2 = "/Users/pburnham/Documents/geospatialData/Carya_ovata/Carya_ovata_sim_disc_10km.tif"
 
 
-data = [file2, file2]
+#data = [file2, file2]
 
 # read data from list of files and make a spaceTime file object
-ds = read_data(data)
+#ds = st.read_data(data)
 # ##########################################################################
 #
 # # align the rasters to the same epsg codes and grid size
