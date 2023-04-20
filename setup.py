@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='spacetime',
     version='0.0.1',
-    packages=['spacetime_python'],
+    packages=['spacetime_demo'],
     url='biobarracuda.com',
     license='GNU GPLv3',
     author='P. A. Burnham et al.',

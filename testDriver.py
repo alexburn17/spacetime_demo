@@ -1,35 +1,28 @@
-from spacetime.input.readData import read_data
-from spacetime.scale.rasterAlign import raster_align
-from spacetime.scale.rasterTrim import raster_trim
-from spacetime.objects.fileObject import file_object
-from spacetime.operations.cubeSmasher import cube_smasher
-from spacetime.operations.makeCube import make_cube
-from spacetime.operations.loadCube import load_cube
-from spacetime.graphics.dataPlot import plot_cube
-from spacetime.operations.time import cube_time, return_time, scale_time, select_time
 import matplotlib.pyplot as plt
-from spacetime.operations.cubeToDataframe import cube_to_dataframe
 import glob
-
 from osgeo import gdal
 import numpy as np
-from datetime import datetime, timedelta
 import pandas as pd
 import netCDF4 as nc
-import xarray as xr
-import re
+import os
+import subprocess
+from on_load import load_spacetime
+
+# load spacetime
+load_spacetime()
+
 
 # read in data set
 ########################################################################################################################
-# # a list of paths to raster files
-# file1 = "/Users/pburnham/Documents/geospatialData/Carya_ovata/Carya_ovata_sim_disc_1km.tif"
-# file2 = "/Users/pburnham/Documents/geospatialData/Carya_ovata/Carya_ovata_sim_disc_10km.tif"
-#
-#
-# data = [file2, file2]
-#
-# # read data from list of files and make a spaceTime file object
-# ds = read_data(data)
+# a list of paths to raster files
+file1 = "/Users/pburnham/Documents/geospatialData/Carya_ovata/Carya_ovata_sim_disc_1km.tif"
+file2 = "/Users/pburnham/Documents/geospatialData/Carya_ovata/Carya_ovata_sim_disc_10km.tif"
+
+
+data = [file2, file2]
+
+# read data from list of files and make a spaceTime file object
+ds = read_data(data)
 # ##########################################################################
 #
 # # align the rasters to the same epsg codes and grid size
@@ -185,23 +178,23 @@ import re
 # ds = make_cube(data = x, fileName = "testCube.nc4")
 #
 # # pull in the file name of our newly created cube
-# newCube = "/Users/pburnham/Documents/GitHub/barra_python/testCube.nc4"
+# newCube = "/Users/pburnham/Documents/GitHub/barraz_python/testCube.nc4"
 #
 # # load the cube object back in
 # ds = load_cube(file = newCube)
 
 
-data = ["demoData/LULC_1995.tif", "demoData/India_cropped-area_1km_2016.tif"]
-
-fo = read_data(data)
-alignedFO = raster_align(data=fo, resolution=0.08, SRS=4326, noneVal=127)
-trimmedFO = raster_trim(alignedFO, method = "intersection")
-
-yearObj = cube_time(start="1995", length=2, scale = "year", skips = 21)
-# set files as the variables and bands within each file as time variables
-cube = make_cube(data = trimmedFO, fileName = "indiaCube.nc4", organizeFiles = "filestotime", organizeBands="bandstotime", timeObj = yearObj)
-
-plot_cube(cube=cube, type="time_series", showPlot=True)
+# data = ["demoData/LULC_1995.tif", "demoData/India_cropped-area_1km_2016.tif"]
+#
+# fo = read_data(data)
+# alignedFO = raster_align(data=fo, resolution=0.08, SRS=4326, noneVal=127)
+# trimmedFO = raster_trim(alignedFO, method = "intersection")
+#
+# yearObj = cube_time(start="1995", length=2, scale = "year", skips = 21)
+# # set files as the variables and bands within each file as time variables
+# cube = make_cube(data = trimmedFO, fileName = "indiaCube.nc4", organizeFiles = "filestotime", organizeBands="bandstotime", timeObj = yearObj)
+#
+# plot_cube(cube=cube, type="time_series", showPlot=True)
 
 
 
