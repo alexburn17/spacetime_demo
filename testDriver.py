@@ -1,44 +1,50 @@
-# import matplotlib.pyplot as plt
-# import glob
-# from osgeo import gdal
-# import numpy as np
-# import pandas as pd
-# import netCDF4 as nc
-# import os
-# import subprocess
-# from on_load import load_spacetime
-#
-# # load spacetime
-# load_spacetime()
+import matplotlib.pyplot as plt
+import glob
+from osgeo import gdal
+import numpy as np
+import pandas as pd
+import netCDF4 as nc
+#from datetime import datetime, timedelta
 
-#from spacetime import spacetime as st
+# load functions from spacetime code base
+from spacetime.input.readData import read_data
+from spacetime.scale.rasterAlign import raster_align
+from spacetime.scale.rasterTrim import raster_trim
+from spacetime.objects.fileObject import file_object
+from spacetime.operations.cubeSmasher import cube_smasher
+from spacetime.operations.makeCube import make_cube
+from spacetime.operations.loadCube import load_cube
+from spacetime.graphics.dataPlot import plot_cube
+from spacetime.operations.time import cube_time, return_time, scale_time, select_time
+from spacetime.operations.cubeToDataframe import cube_to_dataframe
+
 
 
 # read in data set
 ########################################################################################################################
 # a list of paths to raster files
-#file1 = "/Users/pburnham/Documents/geospatialData/Carya_ovata/Carya_ovata_sim_disc_1km.tif"
-#file2 = "/Users/pburnham/Documents/geospatialData/Carya_ovata/Carya_ovata_sim_disc_10km.tif"
+file1 = "/Users/pburnham/Documents/geospatialData/Carya_ovata/Carya_ovata_sim_disc_1km.tif"
+file2 = "/Users/pburnham/Documents/geospatialData/Carya_ovata/Carya_ovata_sim_disc_10km.tif"
 
 
-#data = [file2, file2]
+data = [file2, file2]
 
 # read data from list of files and make a spaceTime file object
-#ds = st.read_data(data)
+ds = read_data(data)
 # ##########################################################################
-#
-# # align the rasters to the same epsg codes and grid size
-# newObj = raster_align(data=ds)
-#
-# # trim the rasters to the same greatest common bounding box
-# trimmed = raster_trim(newObj)
-#
-# # create spacetime time object
-# yearObj = cube_time(start="2000-12-31", length=101, scale = "month")
-#
-#
-# # make the alinged file object into a cube with a time element (writes the new file to disk)
-# ds = make_cube(data = trimmed, fileName = "test.nc4", organizeFiles = "filestovar", organizeBands = "bandstotime", timeObj = yearObj) #varNames=names
+
+# align the rasters to the same epsg codes and grid size
+newObj = raster_align(data=ds)
+
+# trim the rasters to the same greatest common bounding box
+trimmed = raster_trim(newObj)
+
+# create spacetime time object
+yearObj = cube_time(start="2000-12-31", length=101, scale = "month")
+
+
+# make the alinged file object into a cube with a time element (writes the new file to disk)
+ds = make_cube(data = trimmed, fileName = "test.nc4", organizeFiles = "filestovar", organizeBands = "bandstotime", timeObj = yearObj) #varNames=names
 
 
 # sub = select_time(cube=ds, range=['2000-12-31', '2010-12-31'])

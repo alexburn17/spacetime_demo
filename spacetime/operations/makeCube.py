@@ -45,12 +45,10 @@ def make_cube(data = None, fileName = None, organizeFiles="filestotime", organiz
                 index = len(timeList)
         else:
             index = len(data.get_time())
-        print("get array")
 
         array = data.get_data_array()
 
         for i in range(index):
-            print(i)
 
             tempArray = array[i] # this is the big time sink in the program
 
