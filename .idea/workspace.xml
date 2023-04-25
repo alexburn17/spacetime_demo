@@ -28,7 +28,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunManager">
-    <configuration name="testDriver" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+    <configuration name="spacetime_walkthrough" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="spacetime_demo" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -40,7 +40,7 @@
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/testDriver.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/spacetime_walkthrough.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
